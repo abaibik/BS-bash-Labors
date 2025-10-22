@@ -31,7 +31,7 @@ function ensure_folder_exists {
  
 function show_count { 
     ensure_folder_exists
-    echo "Under construction"
+    find home -type d -mindepth 3 -maxdepth 3 | wc -l
 }
 
 function show_size {
