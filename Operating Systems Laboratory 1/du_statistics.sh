@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #######################################################################
-# Sample solution for Lab 1 exercise "du_statistics.sh"
+# Solution for Lab 1 exercise "du_statistics.sh"
 # Usage:
 #   du_statistics.sh [--count|--size]
 # The default --count shows the total number of users, while
@@ -22,11 +22,20 @@ function show_help {
     echo ""
 }
 
-function show_count {
+function ensure_folder_exists {
+    if [ ! -d "home" ]; then
+        echo "home does not exist."
+        exit 1
+    fi
+}
+ 
+function show_count { 
+    ensure_folder_exists
     echo "Under construction"
 }
 
 function show_size {
+    ensure_folder_exists
     echo "Under construction"
 }
 
