@@ -36,7 +36,7 @@ function show_count {
 
 function show_size {
     ensure_folder_exists
-    echo "Under construction"
+    du -h ./home/*/*/*
 }
 
 while test $# -gt 0 ; do
