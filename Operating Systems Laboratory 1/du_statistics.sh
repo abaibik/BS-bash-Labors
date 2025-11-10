@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #######################################################################
 # Solution for Lab 1 exercise "du_statistics.sh"
@@ -31,7 +31,7 @@ function ensure_folder_exists {
  
 function show_count { 
     ensure_folder_exists
-    find home -type d -mindepth 3 -maxdepth 3 | wc -l
+    find home -mindepth 3 -maxdepth 3 -type d | wc -l
 }
 
 function show_size {
