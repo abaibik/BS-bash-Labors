@@ -35,8 +35,11 @@ function show_count {
 }
 
 function show_size {
-    ensure_folder_exists
-    du -h ./home/*/*/*
+  ensure_folder_exists
+  shopt -s nullglob  # makes unmatched globs (e.g., home/*/*/*) expand to nothing instead of staying as plain text
+  du -sm -- home/*/*/* 2>/dev/null |
+    awk '$1>0' |     # filter out empty directories (size = 0 MB)
+    sort -n          # sort the output numerically by size (smallest first)
 }
 
 while test $# -gt 0 ; do
@@ -53,6 +56,12 @@ while test $# -gt 0 ; do
         show_size
         exit
         ;;
+    *)
+      echo "Error: Unknown option '$1'"
+      echo ""
+      show_help
+      exit 1
+      ;;
     esac
     shift
 done
