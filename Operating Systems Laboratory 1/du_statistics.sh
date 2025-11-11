@@ -3,11 +3,12 @@
 #######################################################################
 # Solution for Lab 1 exercise "du_statistics.sh"
 # Usage:
-#   du_statistics.sh [--count|--size]
+#   du_statistics.sh [--count|--size|--organisation]
 # The default --count shows the total number of users, while
 # The option --size shows the size of each individual user directory (in megabytes).
+# The option --organisation shows the total size (in megabytes) of the entire organisation.
 #
-# Author: Aleksandra Baibik
+# Author: Aleksandra Baibik, Samira Alika
 # Date: 2025-10-22
 #######################################################################
 
@@ -19,6 +20,7 @@ function show_help {
     echo "  -h|--help:  Show this help and quit"
     echo "  -c|--count: Shows the total number of users"
     echo "  -s|--size:  Shows size of each individual user directory (in megabytes)"
+    echo "  -o|--organisation: Shows the total size (in megabytes) of the entire organisation"
     echo ""
 }
 
@@ -42,6 +44,12 @@ function show_size {
     sort -n          # sort the output numerically by size (smallest first)
 }
 
+function show_organisation {
+    ensure_folder_exists
+    total=$(du -sm -- home/*/*/* 2>/dev/null | awk '{sum += $1} END {print sum}')
+    echo "Total organisation size: ${total} MB"
+}
+
 while test $# -gt 0 ; do
     case "$1" in
     -h|--help)
@@ -54,6 +62,10 @@ while test $# -gt 0 ; do
         ;;
     -s|--size)
         show_size
+        exit
+        ;;
+    -o|--organisation)
+        show_organisation
         exit
         ;;
     *)
