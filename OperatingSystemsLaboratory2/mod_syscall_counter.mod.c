@@ -35,17 +35,21 @@ MODULE_INFO(retpoline, "Y");
 
 static const struct modversion_info ____versions[]
 __used __section("__versions") = {
+	{ 0x34db050b, "_raw_spin_lock_irqsave" },
+	{ 0xd35cce70, "_raw_spin_unlock_irqrestore" },
+	{ 0x87a21cb3, "__ubsan_handle_out_of_bounds" },
+	{ 0x3c3ff9fd, "sprintf" },
+	{ 0x122c3a7e, "_printk" },
 	{ 0xc983fe3, "proc_create" },
 	{ 0xdcb764ad, "memset" },
-	{ 0x122c3a7e, "_printk" },
 	{ 0x472cf3b, "register_kprobe" },
 	{ 0x2fce0754, "remove_proc_entry" },
-	{ 0x87a21cb3, "__ubsan_handle_out_of_bounds" },
 	{ 0x1b76994, "single_open" },
 	{ 0xbbe44e86, "seq_printf" },
 	{ 0xba8fbd64, "_raw_spin_lock" },
 	{ 0xb5b54b34, "_raw_spin_unlock" },
 	{ 0xeb78b1ed, "unregister_kprobe" },
+	{ 0x5e9808b7, "param_set_int" },
 	{ 0x7da992cc, "seq_read" },
 	{ 0x64d9503, "seq_lseek" },
 	{ 0x3958da9c, "module_layout" },
@@ -54,4 +58,4 @@ __used __section("__versions") = {
 MODULE_INFO(depends, "");
 
 
-MODULE_INFO(srcversion, "CF3D275C7E0219D3F8EB758");
+MODULE_INFO(srcversion, "FD495DD028DFB6F1E1D1427");

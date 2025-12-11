@@ -22,7 +22,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Module loaded successfully. Checking kernel log..."
-dmesg | tail -n 3
+dmesg | tail -n 15
 
 # Function to display current system call counts
 show_counts() {
