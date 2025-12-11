@@ -1,0 +1,1 @@
+savedcmd_/home/test/Dokumente/BS-Labors/BS-bash-Labors/OperatingSystemsLaboratory2/modules.order := {   echo /home/test/Dokumente/BS-Labors/BS-bash-Labors/OperatingSystemsLaboratory2/mod_syscall_counter.o; :; } > /home/test/Dokumente/BS-Labors/BS-bash-Labors/OperatingSystemsLaboratory2/modules.order

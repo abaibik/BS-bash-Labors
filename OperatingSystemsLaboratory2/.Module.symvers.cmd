@@ -1,0 +1,1 @@
+savedcmd_/home/test/Dokumente/BS-Labors/BS-bash-Labors/OperatingSystemsLaboratory2/Module.symvers :=  scripts/mod/modpost -M -m -a      -o /home/test/Dokumente/BS-Labors/BS-bash-Labors/OperatingSystemsLaboratory2/Module.symvers -T /home/test/Dokumente/BS-Labors/BS-bash-Labors/OperatingSystemsLaboratory2/modules.order -i Module.symvers -e 
