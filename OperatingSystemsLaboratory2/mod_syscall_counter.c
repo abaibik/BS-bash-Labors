@@ -1,13 +1,3 @@
-/**
- * mod_syscall_counter_template.c - Linux kernel module to count system calls
- *
- * This module creates a /proc entry that displays the count of different
- * system calls made since the module was loaded. It uses kprobes to hook
- * into the system call entry points.
- * 
- * STUDENT EXERCISE: Complete the TODOs in this file
- */
-
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
