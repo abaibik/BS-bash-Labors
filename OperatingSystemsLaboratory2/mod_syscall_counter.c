@@ -129,7 +129,12 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs)
 #if defined(CONFIG_X86_64) || defined(CONFIG_X86)
     nr = regs->orig_ax;
 #elif defined(CONFIG_ARM64)
-    nr = regs->syscallno;      // IMPORTANT: on ARM64 the syscall number is taken from syscallno
+    /*
+     * We probe "invoke_syscall". On ARM64, function arguments are passed in:
+     * x0..x7 => regs->regs[0]..regs->regs[7]
+     * invoke_syscall(regs, scno) => scno is in x1 => regs->regs[1]
+     */
+    nr = (long)regs->regs[1];      
 #endif
 
     if (nr >= 0 && nr < NR_syscalls) {
