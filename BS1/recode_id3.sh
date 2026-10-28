@@ -10,7 +10,7 @@
 # If FILES are not provided, search for .mp3 and .MP3 files in
 # all subdirectories.
 #
-# Author: Alexandra Baibik, 
+# Authors: Alexandra Baibik, Nathalie Fuchs, Julianna Kustos
 # Date: 2026-10-30
 #######################################################################
 
