@@ -92,18 +92,21 @@ function convert_tags {
     check_id3v2_installed
     check_files "$@"
 
+    local failed=0
+
     if [ "$#" -eq 0 ]; then
         # Find and convert all MP3 files recursively
-        find . -type f \( -name "*.mp3" -o -name "*.MP3" \) |
         while IFS= read -r file; do
-            convert_file "$file"
-        done
+            convert_file "$file" || failed=1
+        done < <(find . -type f \( -name "*.mp3" -o -name "*.MP3" \))
     else
         # Convert the files provided by the user
         for file in "$@"; do
-            convert_file "$file"
+            convert_file "$file" || failed=1
         done
     fi
+
+    return "$failed"
 }
 
 
