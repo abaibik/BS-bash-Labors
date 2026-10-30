@@ -116,7 +116,7 @@ function comment_tags {
     local failed=0
     local IFS=$'\n'
     local today=$(date +%F)
-    local authors="Alexandra Baibik, Nathalie Fuchs, Julianna Kustos"
+    local authors=$USERNAME
 
     if [ "$#" -eq 0 ]; then
         files=$(find . -type f -iname "*.mp3") || return 1
