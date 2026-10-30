@@ -31,7 +31,7 @@ function show_help {
 
 function check_id3v2_installed {
     if ! command -v id3v2 > /dev/null 2>&1; then
-        echo "Error: id3v2 is not installed."
+        echo "Error: id3v2 is not installed."  >&2
         exit 1
     fi
 }
@@ -39,7 +39,7 @@ function check_id3v2_installed {
 function check_files {
     for file in "$@"; do
         if [ ! -f "$file" ]; then
-            echo "Error: File '$file' does not exist."
+            echo "Error: File '$file' does not exist." >&2
             exit 1
         fi
     done
@@ -56,25 +56,23 @@ function has_no_id3v2 {
 }
  
 function show_list {
+    local IFS=$'\n'
     check_id3v2_installed
-    check_files "$@"
+
+    local files
 
     if [ "$#" -eq 0 ]; then
-        # Find all MP3 files recursively
-        find . -type f \( -name "*.mp3" -o -name "*.MP3" \) |
-        while IFS= read -r file; do
-            if has_no_id3v2 "$file"; then
-                echo "$file"
-            fi
-        done
+        files=$(find . -type f -iname "*.mp3") || return 1
     else
-        # Check the files provided by the user
-        for file in "$@"; do
+        check_files "$@"
+        files="$*"       
+    fi
+
+    for file in $files; do
             if has_no_id3v2 "$file"; then
                 echo "$file"
             fi
         done
-    fi
 }
 
 function convert_file {
@@ -89,22 +87,22 @@ function convert_file {
 }
 
 function convert_tags {
+    local IFS=$'\n'
     check_id3v2_installed
-    check_files "$@"
 
     local failed=0
+    local files
 
     if [ "$#" -eq 0 ]; then
-        # Find and convert all MP3 files recursively
-        while IFS= read -r file; do
-            convert_file "$file" || failed=1
-        done < <(find . -type f \( -name "*.mp3" -o -name "*.MP3" \))
+         files=$(find . -type f -iname "*.mp3") || return 1
     else
-        # Convert the files provided by the user
-        for file in "$@"; do
+        check_files "$@" 
+        files="$*"         
+    fi
+
+    for file in $files; do
             convert_file "$file" || failed=1
         done
-    fi
 
     return "$failed"
 }
