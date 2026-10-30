@@ -5,7 +5,8 @@
 # Usage:
 #   recode_id3.sh --list-v1 [FILES]
 #   recode_id3.sh --convert [FILES]
-# Lists files without ID3v2 tags and converts ID3v1 tags to ID3v2.
+#   recode_id3.sh --comment [FILES]
+# Lists files without ID3v2 tags, converts ID3v1 tags to ID3v2 and adds a comment with the authors' names and the current date.
 # If no option is given, --list-v1 is the default.
 # If FILES are not provided, search for .mp3 and .MP3 files in
 # all subdirectories.
@@ -24,6 +25,7 @@ function show_help {
     echo "  -h, --help: Show this help and quit"
     echo "  --list-v1:   List files without ID3v2 tags"
     echo "  --convert:   Convert ID3v1 tags to ID3v2"
+    echo "  --comment:   Add 'Converted by' with authors' names and the current date"
     echo ""
     echo "If no option is given, --list-v1 is the default."
     echo "If no files are provided, search all subdirectories."
@@ -107,6 +109,34 @@ function convert_tags {
     return "$failed"
 }
 
+function comment_tags {
+    check_id3v2_installed
+
+    local files
+    local failed=0
+    local IFS=$'\n'
+    local today=$(date +%F)
+    local authors="Alexandra Baibik, Nathalie Fuchs, Julianna Kustos"
+
+    if [ "$#" -eq 0 ]; then
+        files=$(find . -type f -iname "*.mp3") || return 1
+    else
+        check_files "$@"
+        files="$*"
+    fi
+
+    for file in $files; do
+        if id3v2 --comment ":Converted by $authors $today" "$file"; then
+            echo "Comment added: $file"
+        else
+            echo "Error: Could not add comment to '$file'" >&2
+            failed=1
+        fi
+    done
+
+    return "$failed"
+}
+
 
 # If no arguments are given, list is the default
 if [ $# -eq 0 ]; then
@@ -125,6 +155,10 @@ case "$1" in
     --convert)
         shift
         convert_tags "$@"
+        ;;
+    --comment)
+        shift
+        comment_tags "$@"
         ;;
     -*)
         echo "Error: Unknown option '$1'"
