@@ -24,8 +24,10 @@
 #include <linux/tracepoint-defs.h>
 #include <linux/spinlock.h>
 #include <linux/version.h>
-#include <linux/string.h> 
+#include <linux/init.h>
+#include <linux/string.h>
 #include <linux/errno.h>  
+#include <linux/proc_fs.h>
 
 /* Syscall-Namen (fertig bereitgestellt) */
 #define WANT_SYSCALL_NAMES
@@ -57,8 +59,10 @@
  * ---------------------------------------------------------------------- */
 
 /* TODO 2a: Zählerarray */
+static unsigned long syscall_counts[MAX_SYSCALLS];
 
 /* TODO 2b: Tracepoint-Zeiger */
+static struct tracepoint *sys_enter_tp;
 
 
 /* -------------------------------------------------------------------------
@@ -122,6 +126,19 @@ static int syscall_counter_open(struct inode *inode, struct file *file)
 }
 
 
+/* /proc/syscall_counter - Schnittstelle */
+
+// Zeiger auf den /proc-Eintrag
+static struct proc_dir_entry *syscall_proc_entry;
+
+// Funktionen zum Lesen der Datei
+static const struct proc_ops syscall_counter_proc_ops = {
+    .proc_open    = syscall_counter_open,
+    .proc_read    = seq_read,
+    .proc_lseek   = seq_lseek,
+    .proc_release = single_release,
+};
+
 /* -------------------------------------------------------------------------
  * TODO 5: Tracepoint suchen
  *
@@ -167,8 +184,6 @@ static int find_sys_enter_tp(struct tracepoint **tp_ptr)
         return 0;
     }
 
-
-
 /* -------------------------------------------------------------------------
  * TODO 6: Tracepoint registrieren und deregistrieren
  *
@@ -187,9 +202,51 @@ static int find_sys_enter_tp(struct tracepoint **tp_ptr)
  *        in probe_sys_enter() aktiv ist?
  * ---------------------------------------------------------------------- */
 
-/* TODO 6a: register_tp */
 
-/* TODO 6b: unregister_tp */
+/* TODO 6a: Tracepoint registrieren */
+static int register_tp(void)
+    {
+        int ret;
+
+        // sys_enter-Tracepoint suchen
+        ret = find_sys_enter_tp(&sys_enter_tp);
+        if (ret != 0) {
+        sys_enter_tp = NULL;
+        return ret;
+}
+
+        // Probe registrieren
+        ret = tracepoint_probe_register(
+            sys_enter_tp,
+            (void *)probe_sys_enter,
+            NULL
+        );
+
+        if (ret != 0)
+            return ret;
+
+        return 0;
+    }
+
+/* TODO 6b: Tracepoint deregistrieren */
+static void unregister_tp(void)
+    {
+        if (sys_enter_tp == NULL)
+            return;
+
+        // Probe deregistrieren
+        tracepoint_probe_unregister(
+            sys_enter_tp,
+            (void *)probe_sys_enter,
+            NULL
+        );
+
+        // Auf laufende Probe-Aufrufe warten
+        tracepoint_synchronize_unregister();
+
+        sys_enter_tp = NULL;
+    }
+
 
 
 /* -------------------------------------------------------------------------
@@ -207,9 +264,61 @@ static int find_sys_enter_tp(struct tracepoint **tp_ptr)
  *
  * ---------------------------------------------------------------------- */
 
- /* TODO 7a: Init-Implementierung */
 
- /* TODO 7b: Exit-Implementierung */
+
+/* TODO 7a: Modul initialisieren */
+static int __init mod_syscall_tracepoint_init(void)
+{
+    int ret;
+
+    // Alle Zähler auf 0 setzen
+    memset(syscall_counts, 0, sizeof(syscall_counts));
+
+    // Tracepoint registrieren
+    ret = register_tp();
+
+    // Bei Fehler Initialisierung abbrechen
+    if (ret != 0) {
+        printk(KERN_ERR "syscall_tracepoint: Registrierung fehlgeschlagen: %d\n", ret);
+        return ret;
+    }
+
+    // /proc/syscall_counter erstellen
+    syscall_proc_entry = proc_create(
+        "syscall_counter",
+        0444,
+        NULL,
+        &syscall_counter_proc_ops
+    );
+
+    // Bei Fehler Tracepoint wieder deregistrieren
+    if (syscall_proc_entry == NULL) {
+        printk(KERN_ERR "syscall_tracepoint: /proc konnte nicht erstellt werden\n");
+        unregister_tp();
+        return -ENOMEM;
+    }
+
+    // Erfolgsmeldung ausgeben
+    printk(KERN_INFO "syscall_tracepoint: Modul geladen\n");
+
+    return 0;
+}
+
+
+
+/* TODO 7b: Modul entladen */
+static void __exit mod_syscall_tracepoint_exit(void)
+{
+    // /proc-Eintrag entfernen
+    proc_remove(syscall_proc_entry);
+
+    // Tracepoint deregistrieren
+    unregister_tp();
+
+    // Erfolgsmeldung ausgeben
+    printk(KERN_INFO "syscall_tracepoint: Modul entladen\n");
+}
+
 
 module_init(mod_syscall_tracepoint_init);
 module_exit(mod_syscall_tracepoint_exit);
