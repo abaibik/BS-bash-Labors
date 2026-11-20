@@ -24,8 +24,8 @@
 #include <linux/tracepoint-defs.h>
 #include <linux/spinlock.h>
 #include <linux/version.h>
-#include <linux/string.h> // strcmp()
-#include <linux/errno.h>  // ENOENT
+#include <linux/string.h> 
+#include <linux/errno.h>  
 
 /* Syscall-Namen (fertig bereitgestellt) */
 #define WANT_SYSCALL_NAMES
@@ -154,17 +154,17 @@ static void lookup_sys_enter_tp(struct tracepoint *tp, void *priv)
 /* TODO 5b: Suche starten und Ergebnis prüfen */
 static int find_sys_enter_tp(struct tracepoint **tp_ptr)
     {
-    *tp_ptr = NULL;
+        *tp_ptr = NULL;
 
-    // Alle Kernel-Tracepoints durchsuchen
-    for_each_kernel_tracepoint(lookup_sys_enter_tp, tp_ptr);
+        // Alle Kernel-Tracepoints durchsuchen
+        for_each_kernel_tracepoint(lookup_sys_enter_tp, tp_ptr);
 
-    // Fehler zurückgeben, falls nicht gefunden
-    if (*tp_ptr == NULL) {
-        return -ENOENT;
-    }
+        // Fehler zurückgeben, falls nicht gefunden
+        if (*tp_ptr == NULL) {
+            return -ENOENT;
+        }
 
-    return 0;
+        return 0;
     }
 
 

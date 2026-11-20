@@ -4,6 +4,7 @@
 #define __SYSCALL_ARR_H__
 
 static const char * const syscall_names[] = {
+    "io_setup", // i:0 ID:0 (added: missing syscall 0)
     "io_destroy", // i:1 ID:1
     "io_submit", // i:2 ID:2
     "io_cancel", // i:3 ID:3

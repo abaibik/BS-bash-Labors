@@ -1,0 +1,27 @@
+
+{
+    "configurations": [
+        {
+            "name": "Linux Kernel ARM64",
+            "compilerPath": "/usr/bin/gcc",
+            "intelliSenseMode": "linux-gcc-arm64",
+            "cStandard": "gnu11",
+            "defines": [
+                "__KERNEL__",
+                "MODULE"
+            ],
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/src/linux-6.11/include",
+                "/usr/src/linux-6.11/include/uapi",
+                "/usr/src/linux-6.11/include/generated",
+                "/usr/src/linux-6.11/include/generated/uapi",
+                "/usr/src/linux-6.11/arch/arm64/include",
+                "/usr/src/linux-6.11/arch/arm64/include/uapi",
+                "/usr/src/linux-6.11/arch/arm64/include/generated",
+                "/usr/src/linux-6.11/arch/arm64/include/generated/uapi"
+            ]
+        }
+    ],
+    "version": 4
+}
