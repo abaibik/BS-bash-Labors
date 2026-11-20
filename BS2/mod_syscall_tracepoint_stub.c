@@ -24,6 +24,8 @@
 #include <linux/tracepoint-defs.h>
 #include <linux/spinlock.h>
 #include <linux/version.h>
+#include <linux/string.h> // strcmp()
+#include <linux/errno.h>  // ENOENT
 
 /* Syscall-Namen (fertig bereitgestellt) */
 #define WANT_SYSCALL_NAMES
@@ -137,9 +139,34 @@ static int syscall_counter_open(struct inode *inode, struct file *file)
  *        Zeiger direkt per Symbol-Name zu ermitteln?
  * ---------------------------------------------------------------------- */
 
-/* TODO 5a: lookup_sys_enter_tp */
 
-/* TODO 5b: find_sys_enter_tp */
+/* TODO 5a: sys_enter-Tracepoint suchen */
+static void lookup_sys_enter_tp(struct tracepoint *tp, void *priv)
+    {
+        struct tracepoint **tp_ptr = priv;
+
+        // Prüfen, ob der Tracepoint "sys_enter" heißt
+        if (strcmp(tp->name, "sys_enter") == 0) {
+            *tp_ptr = tp;
+        }
+    }
+
+/* TODO 5b: Suche starten und Ergebnis prüfen */
+static int find_sys_enter_tp(struct tracepoint **tp_ptr)
+    {
+    *tp_ptr = NULL;
+
+    // Alle Kernel-Tracepoints durchsuchen
+    for_each_kernel_tracepoint(lookup_sys_enter_tp, tp_ptr);
+
+    // Fehler zurückgeben, falls nicht gefunden
+    if (*tp_ptr == NULL) {
+        return -ENOENT;
+    }
+
+    return 0;
+    }
+
 
 
 /* -------------------------------------------------------------------------
