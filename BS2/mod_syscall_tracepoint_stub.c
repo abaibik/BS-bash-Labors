@@ -304,8 +304,6 @@ static int __init mod_syscall_tracepoint_init(void)
     return 0;
 }
 
-
-
 /* TODO 7b: Modul entladen */
 static void __exit mod_syscall_tracepoint_exit(void)
 {
